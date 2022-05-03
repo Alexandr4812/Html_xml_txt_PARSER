@@ -29,17 +29,29 @@ def mainconfig(xmlfile):
         title_second = clean_text(title_second_tag.text)
         title_second = title_second.replace(title, " ")
 
-        for node in response.select('table td[style="text-align: justify"]'):
-            main_text += node.text    
+        comments = ""
 
-        pr = f"<a href='{url}'>{title}</a>\n{title_second}\n\n{clean_text(main_text)}\n___separator___\n"
+        if response.select('table td font[color="#999966"]'):
+            for i in range(0, len(response.select('table td font[color="#999966"]'))):
+                comments_tag = response.select('table td font[color="#999966"]')[i].text
+                comments += f"\n\nПримечание {str(i+1)}:\n{clean_text(comments_tag)}"
+        else:
+            pass
+
+        for node in response.select('table td[style="text-align: justify"]'):
+            node = node.text
+            n = node.replace("страница 1 / 1", '')
+            main_text += n
+
+        main_text_result = f"<a href='{url}'>{title}</a>\n{title_second}\n\n{clean_text(main_text)}{comments}\n___separator___\n"
         
-        tpr += pr
+        tpr += main_text_result
+
 
     return tpr
 
-with open("itivuttaka.txt", "w") as f:
-    f.write(mainconfig("itivuttaka.xml"))
+with open("udana_test.txt", "w") as f:
+    f.write(mainconfig("udana.xml"))
 
 
 #print(mainconfig("udana.xml"))
