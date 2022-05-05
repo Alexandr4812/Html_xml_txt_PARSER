@@ -34,7 +34,7 @@ def mainconfig(xmlfile):
         if response.select('table td font[color="#999966"]'):
             for i in range(0, len(response.select('table td font[color="#999966"]'))):
                 comments_tag = response.select('table td font[color="#999966"]')[i].text
-                comments += f"\n\nПримечание {str(i+1)}:\n{clean_text(comments_tag)}"
+                comments += f"\n\n<u>Примечание {str(i+1)}:</u>\n<em>{clean_text(comments_tag)}</em>"
         else:
             pass
 
