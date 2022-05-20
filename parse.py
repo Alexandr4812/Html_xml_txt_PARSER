@@ -3,24 +3,24 @@ from bs4 import BeautifulSoup
 
 def clean_text(text):
     return ' '.join(text.replace('\r\n', '').replace('\n\n', '\n').split())     
-    
+
 def mainconfig(xmlfile):
-    tpr = ""       
+    tpr = ""
     result = []
     with open(xmlfile, "r") as f:
         contents = f.read()
         soup = BeautifulSoup(contents, features="xml")
         for tag in soup.find_all("loc"):
-            result.append(tag.text)        
-               
+            result.append(tag.text)
+
     for i in range(0, len(result) - 1):
         url = result[i]
                    
         resp = requests.get(url)
-        resp.encoding = "windows-1251"   
+        resp.encoding = "windows-1251"
         
         main_text = ""
-        response = BeautifulSoup(resp.text, "lxml")  
+        response = BeautifulSoup(resp.text, "lxml")
         
         title_tag = response.select('table [width="70%"] td font font')[0]
         title = clean_text(title_tag.text)
@@ -29,7 +29,7 @@ def mainconfig(xmlfile):
         title_second = clean_text(title_second_tag.text)
         title_second = title_second.replace(title, " ")
 
-        comments = ""
+        comments = " "
 
         if response.select('table td font[color="#999966"]'):
             for i in range(0, len(response.select('table td font[color="#999966"]'))):
@@ -43,15 +43,18 @@ def mainconfig(xmlfile):
             n = node.replace("страница 1 / 1", '')
             main_text += n
 
-        main_text_result = f"<a href='{url}'>{title}</a>\n{title_second}\n\n{clean_text(main_text)}{comments}\n___separator___\n"
+        main_text_result = f" <a href='{url}'>{title}</a>\n{title_second}\n\n{clean_text(main_text)}{comments}\n___separator___\n"
         
         tpr += main_text_result
 
-
     return tpr
 
-with open("udana_test.txt", "w") as f:
-    f.write(mainconfig("udana.xml"))
+try:
+    with open("dhammapada.txt", "w") as f:
+        f.write(mainconfig("dhammapada.xml"))
+except UnicodeError:
+    f.close()
 
 
-#print(mainconfig("udana.xml"))
+
+
